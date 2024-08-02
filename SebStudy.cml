@@ -1,0 +1,434 @@
+BoundedContext Resume {
+    domainVisionStatement "Resume realizes the following subdomains: Resume"
+    type FEATURE
+
+    Aggregate ResumeAggreate {
+
+        ValueObject FirstName {
+            String firstName
+            // Не должно быть: [0-9], ъ ь в начале, спец символов, латиница   
+        }
+
+        ValueObject LastName {
+            String lastName
+            // Не должно быть: [0-9], ъ ь в начале, спец символов, латиница   
+        }
+
+        ValueObject MidleName {
+            String midleName
+            // Не должно быть: [0-9], ъ ь в начале, спец символов, латиница   
+        }
+
+        ValueObject PhoneNumber {
+            String phoneNumber
+            // Только цифры, не более 11
+        }
+
+        ValueObject Education {
+            String education
+        }
+
+        ValueObject BornDate {
+            - date bornDate
+        }
+
+        ValueObject Educations {
+            - List<Education> educations
+        }
+
+        ValueObject AboutMe {
+            String aboutMe
+            // Не более 350 символов
+        }
+
+        ValueObject Skill {
+            String skill
+            // Не более 30 символов 
+        }
+        
+        ValueObject Skills {
+            - List<Skill> skills
+        }
+
+        ValueObject Photo {
+            String photo
+        }
+        
+        ValueObject Direction {
+            String direction
+            // Не более 50 символов
+        }
+
+        ValueObject Directions {
+            - List<Direction> directions
+        }
+
+        ValueObject AboutProjects {
+            String aboutProjects
+            // Не более 400 символов
+        }
+
+        ValueObject Portfolio {
+            String portfolio
+            // Проверка на ссылку
+        }
+
+        ValueObject ResumeId {
+            int resumeId
+            // Целочисленное значение
+        }
+
+        abstract CommandEvent AbstractResumeCommand {
+            - Resume resume
+        }
+
+        CommandEvent CreateResume extends @AbstractResumeCommand
+        DomainEvent ResumeCreated {
+            - Date timestamp
+            - Resume resume
+        }
+
+        CommandEvent ChangeResume extends @AbstractResumeCommand
+        DomainEvent ResumeChanged {
+            - Date timestamp
+            - Resume resume
+        }
+
+        CommandEvent RemoveResume extends @AbstractResumeCommand
+        DomainEvent ResumeRemoved {
+            - Date timestamp
+            - ResumeId resumeId
+        }
+
+        Entity Resume {
+            aggregateRoot 
+
+            - ResumeId resumeId
+            - FirstName firstName
+            - LastName lastName
+            - MidleName midleName
+            - PhoneNumber phoneNumber
+            - Education education
+            - AboutMe aboutMe
+            - Skills skills
+            - Photo photo
+            - Directions directions
+            - AboutProjects aboutProjects
+            - Portfolio portfolio
+            - StudentId (foreign key to AccountStudent:uuid)
+        }
+    }
+}
+
+BoundedContext Auth {
+    domainVisionStatement "Auth realizes the following subdomains: Auth"
+    type FEATURE
+
+    Aggregate AccountAggregate { 
+        ValueObject Uuid {
+            - string uuid
+        }
+
+        ValueObject Login {
+            - string login // 
+        }
+
+        ValueObject Password {
+            - string password // от 8 символов, 1 цифра, 1 спец. символ, остальное инглиш, нахуй русский
+        }
+
+        ValueObject FirstName {
+            - string firstName
+        }
+
+        ValueObject LastName {
+            - string lastName
+        }
+
+        ValueObject BornDate {
+            - date bornDate
+        }
+
+        ValueObject Education {
+            - string education
+        }
+
+        ValueObject Direction {
+            - string direction
+        }
+
+        ValueObject Directions {
+            - List<Direction> directions
+        }
+
+        ValueObject Location {
+            - string location
+        }
+
+        ValueObject Title {
+            - string title
+        }
+
+        ValueObject FoundationDate {
+            - date foundationDate
+        }
+
+        ValueObject AboutCompany {
+            - string aboutCompany
+        }
+
+        ValueObject TypeCompany {
+            - string typeCompany
+        }
+
+        ValueObject Skill {
+            - string skill
+        }
+
+        ValueObject ExpectedSkills {
+            - List<Skill> expectedSkills
+        }
+
+        ValueObject Contract {
+            - string contract
+        }
+
+        ValueObject Contracts {
+            - List<Contract> contracts
+        }
+
+        ValueObject Photo {
+            - string photoUrl
+        }
+
+        ValueObject AboutPractice {
+            - string aboutPractice
+        }
+
+        ValueObject AboutProjects {
+            String aboutProjects
+        }
+
+        abstract
+        CommandEvent AbstractAccountCommand {
+            - Account account 
+        }
+
+        CommandEvent RegisterAccount extends @AbstractResumeCommand
+
+        DomainEvent AccountRegistered {
+            Date timestamp
+            - Account account
+        }
+        
+        Entity AccountStudent {
+            aggregateRoot
+
+            - Login login
+            - Password password
+            - FirstName firstName
+            - LastName lastName
+            - BornDate bornDate
+            - Education education
+            - Location location
+        }
+
+        Entity AccountCompany {
+            aggregateRoot
+
+            - Title title
+            - FoundationDate foundationDate
+            - AboutCompany aboutCompany
+            - Login login
+            - Password password
+            - TypeCompany typeCompany
+            - Location location 
+            - Contract contract
+            - Photo photo
+            - ExpectedSkills expectedSkills
+            - AboutPractice aboutPractice
+            - Directions directions
+            - AboutProjects aboutProjects
+        }
+    }
+}
+
+BoundedContext AccountChange {
+    domainVisionStatement "AccountChange realizes the following subdomains: Account change"
+    type FEATURE
+
+    Aggregate AccountAggregate { 
+        ValueObject Uuid {
+            - string uuid
+        }
+
+        ValueObject Login {
+            - string login // 
+        }
+
+        ValueObject Password {
+            - string password // от 8 символов, 1 цифра, 1 спец. символ, остальное инглиш, нахуй русский
+        }
+
+        ValueObject FirstName {
+            - string firstName
+        }
+
+        ValueObject LastName {
+            - string lastName
+        }
+
+        ValueObject BornDate {
+            - date bornDate
+        }
+
+        ValueObject Education {
+            - string education
+        }
+
+        ValueObject Direction {
+            - string direction
+        }
+
+        ValueObject Directions {
+            - List<Direction> directions
+        }
+
+        ValueObject Location {
+            - string location
+        }
+
+        ValueObject Title {
+            - string title
+        }
+
+        ValueObject FoundationDate {
+            - date foundationDate
+        }
+
+        ValueObject AboutCompany {
+            - string aboutCompany
+        }
+
+        ValueObject TypeCompany {
+            - string typeCompany
+        }
+
+        ValueObject Skill {
+            - string skill
+        }
+
+        ValueObject ExpectedSkills {
+            - List<Skill> expectedSkills
+        }
+
+        ValueObject Contract {
+            - string contract
+        }
+
+        ValueObject Contracts {
+            - List<Contract> contracts
+        }
+
+        ValueObject Photo {
+            - string photoUrl
+        }
+
+        ValueObject AboutPractice {
+            - string aboutPractice
+        }
+
+        ValueObject AboutProjects {
+            - String aboutProjects
+        }
+
+        abstract
+        CommandEvent AbstractAccountCommand {
+            - Account account 
+        }
+
+        CommandEvent ChangeAccount extends @AbstractResumeCommand
+
+        DomainEvent AccountChanged {
+            - Account account
+            - Date timestamp
+        }
+        
+        Entity AccountStudent {
+            aggregateRoot
+
+            - Login login
+            - Password password
+            - FirstName firstName
+            - LastName lastName
+            - BornDate bornDate
+            - Education education
+            - Location location
+        }
+
+        Entity AccountCompany {
+            aggregateRoot
+
+            - Title title
+            - FoundationDate foundationDate
+            - AboutCompany aboutCompany
+            - Login login
+            - Password password
+            - TypeCompany typeCompany
+            - Location location 
+            - Contract contract
+            - Photo photo
+            - ExpectedSkills expectedSkills
+            - AboutPractice aboutPractice
+            - Directions directions
+            - AboutProjects aboutProjects
+        }
+    }
+}
+
+BoundedContext Request {
+    domainVisionStatement "Request realizes the following subdomains: Request"
+    type FEATURE
+
+    aggregate RequestAggregate {
+        ValueObject Uuid {
+            - string uuid 
+        }
+
+        ValueObject ResumeId {
+            - string resumeId
+        }
+
+        ValueObject CompanyId {
+            - string companyId
+        }
+
+        ValueObject Status {
+            - int status 
+        }
+    }
+
+    CommandEvent SendRequest extends @AbstractResumeCommand
+    DomainEvent RequestSended {
+        - Request request
+        - Date timestamp
+    }
+}
+
+
+BoundedContext SelectionRequests {
+    domainVisionStatement "SelectionRequests realizes the following subdomains: SelectionRequests"
+    type FEATURE
+
+    ValueObject Status {
+        - int status 
+    }
+
+    CommandEvent ChangeRequestStatus extends @AbstractResumeCommand
+    DomainEvent ChangeRequestStatus {
+        - RequestId requestId 
+        - Status status
+        - Date timestamp
+    }
+
+}

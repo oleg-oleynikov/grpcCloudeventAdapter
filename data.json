@@ -1,0 +1,12 @@
+{
+    "event": {
+        "id": "12341234",
+        "proto_data": {
+            "type_url": "type.googleapis.com/proto.ResumeSended",
+            "value": "CgQxMjM0EgV1c2VyMRoFMTIzNDU="
+        },
+        "source": "example.com",
+        "spec_version": "1.0",
+        "type": "resume.send"
+    }
+}

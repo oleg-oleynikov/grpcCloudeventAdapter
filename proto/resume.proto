@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option go_package = "./resume";
+
+package proto;
+
+message ResumeSended{
+    string resumeId = 1;
+    string userName = 2;
+    string password = 3;
+}
+
+message ResumeSendedResponse{
+    string message = 1;
+}
+
+service ResumeService{
+    rpc SendResume(ResumeSended) returns (ResumeSendedResponse) {}
+}
+
+message SignIn {
+    string login = 1;
+    string password = 2;
+}

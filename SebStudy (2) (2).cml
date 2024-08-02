@@ -1,0 +1,525 @@
+BoundedContext Resume {
+    domainVisionStatement "Resume realizes the following subdomains: Resume"
+    type FEATURE
+
+    Aggregate ResumeAggreate {
+
+        ValueObject FirstName {
+            String firstName
+            // Не должно быть: [0-9], ъ ь в начале, спец символов, латиница
+            // Количество символов: 1-25 символов
+        }
+
+        ValueObject LastName {
+            String lastName
+            // Не должно быть: [0-9], ъ ь в начале, спец символов, латиница   
+            // Количество символов: 1-25 символов
+        }
+
+        ValueObject MidleName {
+            String midleName
+            // Не должно быть: [0-9], ъ ь в начале, спец символов, латиница   
+            // Количество символов: 1-25 символов
+        }
+
+        ValueObject PhoneNumber {
+            String phoneNumber
+            // Только цифры, не более 11
+        }
+
+        ValueObject Education {
+            String education
+        }
+
+        ValueObject BornDate {
+            - int bornDate (Unix timestamp)
+            // Не ранее 1900 и не позднее акт. даты
+        }
+
+        ValueObject Educations {
+            - List<Education> educations
+        }
+
+        ValueObject AboutMe {
+            String aboutMe
+            // Не более 350 символов
+        }
+
+        ValueObject Skill {
+            String skill
+            // Не более 30 символов 
+        }
+        
+        ValueObject Skills {
+            - List<Skill> skills
+        }
+
+        ValueObject Photo {
+            String photo
+            // Фотография должна приходить в виде массива байтов
+        }
+        
+        ValueObject Direction {
+            String direction
+            // Не более 50 символов
+        }
+
+        ValueObject Directions {
+            - List<Direction> directions
+        }
+
+        ValueObject AboutProjects {
+            String aboutProjects
+            // Не более 400 символов
+        }
+
+        ValueObject Portfolio {
+            String portfolio
+            // Регулярное выражение на ссылку
+        }
+
+        ValueObject ResumeId {
+            int resumeId
+            // Целочисленное значение
+        }
+
+        abstract CommandEvent AbstractResumeCommand {
+            - Resume resume
+        }
+
+        CommandEvent CreateResume extends @AbstractResumeCommand
+        DomainEvent ResumeCreated {
+            - Date timestamp
+            - Resume resume
+        }
+
+        CommandEvent ChangeResume extends @AbstractResumeCommand
+        DomainEvent ResumeChanged {
+            - Date timestamp
+            - Resume resume
+        }
+
+        CommandEvent RemoveResume extends @AbstractResumeCommand
+        DomainEvent ResumeRemoved {
+            - Date timestamp
+            - ResumeId resumeId
+        }
+
+        Entity Resume {
+            aggregateRoot 
+
+            - required ResumeId resumeId
+            - required FirstName firstName
+            - required LastName lastName
+            - optional MidleName midleName
+            - required PhoneNumber phoneNumber
+            - required Education education
+            - optional AboutMe aboutMe
+            - optional Skills skills
+            - optional Photo photo
+            - required Directions directions
+            - optional AboutProjects aboutProjects
+            - optional Portfolio portfolio
+            - required StudentId (foreign key to AccountStudent:uuid)
+        }
+    }
+}
+
+BoundedContext Auth {
+    domainVisionStatement "Auth realizes the following subdomains: Auth"
+    type FEATURE
+
+    Aggregate AccountAggregate { 
+        ValueObject Uuid {
+            - string uuid
+            // Айди генерится библиотекой
+        }
+
+        ValueObject Login {
+            - string login
+            // Количество символов 8-30
+        }
+
+        ValueObject Password {
+            - string password
+            // от 8 символов, 1 цифра, 1 спец. символ, только латиница
+        }
+
+        ValueObject FirstName {
+            - string firstName
+            // Не должно быть: [0-9], ъ ь в начале, спец символов, латиница
+            // Количество символов: 1-25 символов
+        }
+
+        ValueObject LastName {
+            - string lastName
+            // Не должно быть: [0-9], ъ ь в начале, спец символов, латиница
+            // Количество символов: 1-25 символов
+        }
+
+        ValueObject BornDate {
+            - int bornDate (Unix timestamp)
+            // Не ранее 1900 и не позднее акт. даты
+        }
+
+        ValueObject Education {
+            - string education
+            // Выбор из выпадающего списка
+            // (Нужна ли валидация?)
+        }
+
+        ValueObject Direction {
+            - string direction
+            // Выбор из выпадающего списка
+            // (Нужна ли валидация?)
+        }
+
+        ValueObject Directions {
+            - List<Direction> directions
+        }
+
+        ValueObject Location {
+            - string location
+            // Выбор из выпадающего списка (Города)
+        }
+
+        // ValueObject Locations {
+        //     - List<Location> locations
+        // }
+
+        ValueObject Title {
+            - string title
+            // Название компании
+            // от 1 до 100 символов
+        }
+
+        ValueObject FoundationDate {
+            - int foundationDate (Unix timestamp)
+            // Не позднее акт. даты
+
+        }
+
+        ValueObject AboutCompany {
+            - string aboutCompany
+            // Максимально количество символов 300 
+        }
+
+        ValueObject TypeCompany {
+            - string typeCompany
+            // Предложенные варианты
+        }
+
+        ValueObject TypesCompany {
+            - List<TypesCompany> typesCompany
+        }
+
+        ValueObject Skill {
+            - string skill
+            // Не более 30 символов
+        }
+
+        ValueObject ExpectedSkills {
+            - List<Skill> expectedSkills
+        }
+
+        ValueObject Contract {
+            - string contract
+            // Пока хз как реализуем
+        }
+
+        ValueObject Contracts {
+            - List<Contract> contracts
+        }
+
+        ValueObject Photo {
+           - List<byte> bytes
+            // jpg, jpeg, png
+            // Ограничение по размеру до 4 мб
+        }
+
+        ValueObject AboutPractice {
+            - string aboutPractice
+            // Что предстоит делать 
+            // Максимальное количество символов 500
+        }
+
+        ValueObject AboutProjects {
+            String aboutProjects
+            //  О проектах, которые были реализованные другими практикантами
+            // Максимальное количество символов 500
+            // Необязательное поле
+        }
+
+        abstract
+        CommandEvent AbstractAccountCommand {
+            - Account account 
+        }
+
+        CommandEvent RegisterAccount extends @AbstractResumeCommand
+
+        DomainEvent AccountRegistered {
+            - required Date timestamp
+            - required Account account
+        }
+        
+        Entity AccountStudent {
+            aggregateRoot
+
+            - required Login login
+            - required Password password
+            - required FirstName firstName
+            - required LastName lastName
+            - required BornDate bornDate
+            - required Education education
+            - required Location location
+        }
+
+        Entity AccountCompany {
+            aggregateRoot
+
+            - required Title title
+            - optional FoundationDate foundationDate
+            - optional AboutCompany aboutCompany
+            - required Login login
+            - required Password password
+            - required TypeCompany typeCompany
+            - required Location location 
+            
+            // Пукнты для вакансии:
+            - optional Contract contract
+            - optional Photo photo
+            - optional ExpectedSkills expectedSkills
+            - optional AboutPractice aboutPractice
+            - optional Directions directions
+            - optional AboutProjects aboutProjects
+        }
+    }
+}
+
+BoundedContext AccountChange {
+    domainVisionStatement "AccountChange realizes the following subdomains: Account change"
+    type FEATURE
+
+    Aggregate AccountAggregate { 
+        ValueObject Uuid {
+            - string uuid
+            // Айди генерится библиотекой
+        }
+
+        // ValueObject Login {
+        //     - string login
+        //    // Количество символов 8-30
+        // }
+
+        // ValueObject Password {
+        //    - string password
+        //    // от 8 символов, 1 цифра, 1 спец. символ, остальное инглиш, нахуй русский
+        //    // only read ?
+        // }
+
+        ValueObject FirstName {
+            - string firstName
+            // Не должно быть: [0-9], ъ ь в начале, спец символов, латиница
+            // Количество символов: 1-25 символов
+        }
+
+        ValueObject LastName {
+            - string lastName
+            // Не должно быть: [0-9], ъ ь в начале, спец символов, латиница
+            // Количество символов: 1-25 символов
+        }
+
+        ValueObject BornDate {
+             - int bornDate (Unix timestamp)
+            // Не ранее 1900 и не позднее акт. даты
+        }
+
+        ValueObject Education {
+            - string education
+            // Выбор из выпадающего списка
+            // (Нужна ли валидация?)
+        }
+
+        ValueObject Educations {
+            - List<Education> educations
+        }
+
+        ValueObject Direction {
+            - string direction
+            // Выбор из выпадающего списка
+            // (Нужна ли валидация?)
+        }
+
+        ValueObject Directions {
+            - List<Direction> directions
+        }
+
+        ValueObject Location {
+            - string location
+            // Выбор из выпадающего списка (Города)
+        }
+
+        ValueObject Locations {
+            - List<Location> locations
+        }
+
+        ValueObject Title {
+            - string title
+            // Название компании
+            // от 1 до 100 символов
+        }
+
+        ValueObject FoundationDate {
+            - int foundationDate (Unix timestamp)
+            // Не позднее акт. даты
+        }
+
+        ValueObject AboutCompany {
+            - string aboutCompany
+            // Максимально количество символов 800
+        }
+
+        ValueObject TypeCompany {
+            - string typeCompany
+            // Предложенные варианты
+        }
+
+        ValueObject TypesCompany {
+            - List<TypesCompany> typesCompany
+        }
+
+        ValueObject Skill {
+            - string skill
+            // Не более 30 символов
+        }
+
+        ValueObject ExpectedSkills {
+            - List<Skill> expectedSkills
+        }
+
+        ValueObject Contract {
+            - string contract
+            // Пока хз как реализуем
+        }
+
+        ValueObject Contracts {
+            - List<Contract> contracts
+        }
+
+        ValueObject Photo {
+            - List<byte> bytes
+            // jpg, jpeg, png
+            // Ограничение по размеру до 4 мб
+        }
+
+        ValueObject AboutPractice {
+            - string aboutPractice
+            // Что предстоит делать 
+            // Максимальное количество символов 500
+        }
+
+        ValueObject AboutProjects {
+            String aboutProjects
+            // О проектах, которые были реализованные другими практикантами
+            // Максимальное количество символов 500
+            // Необязательное поле
+        }
+
+        abstract
+        CommandEvent AbstractAccountCommand {
+            - Account account 
+        }
+
+        CommandEvent ChangeAccount extends @AbstractResumeCommand
+
+        DomainEvent AccountChanged {
+            - Account account
+            - Date timestamp
+        }
+        
+        Entity AccountStudent {
+            aggregateRoot
+
+            - required FirstName firstName
+            - required LastName lastName
+            - required BornDate bornDate
+            - required Education education
+            - required Location location
+        }
+
+        Entity AccountCompany {
+            aggregateRoot
+
+            - required Title title
+            - optional FoundationDate foundationDate
+            - optional AboutCompany aboutCompany
+            - required Login login
+            - required Password password
+            - required TypeCompany typeCompany
+            - required Location location 
+            
+            // Пукнты для вакансии:
+            - optional Contract contract
+            - optional Photo photo
+            - optional ExpectedSkills expectedSkills
+            - optional AboutPractice aboutPractice
+            - optional Directions directions
+            - optional AboutProjects aboutProjects
+        }
+    }
+}
+
+BoundedContext Request {
+    domainVisionStatement "Request realizes the following subdomains: Request"
+    type FEATURE
+
+    aggregate RequestAggregate {
+        ValueObject Uuid {
+            string uuid 
+            // Айди генерится библиотекой
+        }
+
+        ValueObject ResumeId {
+            string resumeId
+            // Целочисленное значение
+        }
+
+        ValueObject CompanyId {
+            string companyId
+            // Целочисленное значение
+        }
+
+        ValueObject Status {
+            int status 
+            // Целочисленное значение от 0 до 3 (0 - not read, 1 - read, 2 - accepted, 3 - refused)
+        }
+    }
+
+    // Где Entity ?
+
+    CommandEvent SendRequest extends @AbstractResumeCommand
+    DomainEvent RequestSended {
+        - Request request
+        - Date timestamp
+    }
+}
+
+
+BoundedContext SelectionRequests {
+    domainVisionStatement "SelectionRequests realizes the following subdomains: SelectionRequests"
+    type FEATURE
+
+    ValueObject Status {
+            int status 
+            // Целочисленное значение от 0 до 3 (0 - not read, 1 - read, 2 - accepted, 3 - refused)
+    }
+    //  А может Entity ?
+
+    CommandEvent ChangeRequestStatus extends @AbstractResumeCommand
+    DomainEvent ChangeRequestStatus {
+        - RequestId requestId 
+        - Status status
+        - Date timestamp
+    }
+
+}

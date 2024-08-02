@@ -1,0 +1,9 @@
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.yaml
+    ports:
+      - "50051:50051"
+    restart: always 
