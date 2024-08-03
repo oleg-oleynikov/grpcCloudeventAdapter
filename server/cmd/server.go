@@ -37,6 +37,8 @@ func NewCloudEventServiceServer(opt ...grpc.ServerOption) *CloudEventServiceServ
 
 func (s *CloudEventServiceServer) Publish(ctx context.Context, req *protoCloudevents.PublishRequest) (*emptypb.Empty, error) {
 	event := req.GetEvent()
+	log.Println("Пришло нахуй")
+	log.Println(event)
 	select {
 	case s.eventChan <- event:
 	default:
@@ -132,7 +134,7 @@ func (s *CloudEventServiceServer) Run(network string, addr string) {
 
 	protoCloudevents.RegisterCloudEventServiceServer(s.server, s)
 
-	log.Printf("Try starting listening server on %s\n", addr)
+	log.Printf("Starting listening server on %s\n", addr)
 	go func() {
 		if err := s.server.Serve(lis); err != nil {
 			fmt.Printf("Failed to serve: %v", err)
@@ -161,14 +163,12 @@ func main() {
 	// streamInterceptor := cors.BuildCorsStreamInterceptor(corsHandler)
 	// c := NewCloudEventServiceServer(unaryInterceptor, streamInterceptor)
 	c := NewCloudEventServiceServer(grpc.UnaryInterceptor(func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
-		log.Println("Типа перехватил")
+		// log.Println("Типа перехватил")
 		return handler(ctx, req)
 	}))
 
 	c.Run("tcp", ":50051")
 
-	log.Println("ПОСЛЕ ЗАПУСКА")
 	<-quit
-	log.Println("ПОСЛЕ QUIT")
 	c.Shutdown()
 }
