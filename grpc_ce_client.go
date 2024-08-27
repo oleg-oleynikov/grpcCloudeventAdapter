@@ -28,6 +28,7 @@ func NewCloudeventsServiceClient(target string) *CloudeventsServiceClient {
 		log.Printf("Failed to connect: %v", err)
 		return nil
 	}
+
 	grpcClient := v1.NewCloudEventServiceClient(conn)
 
 	c := &CloudeventsServiceClient{

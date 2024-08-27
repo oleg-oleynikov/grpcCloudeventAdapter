@@ -2,20 +2,20 @@ syntax = "proto3";
 
 option go_package = "./resume";
 
-package proto;
+package resume;
 
-message ResumeSended{
+message ResumeCreated{
     string resumeId = 1;
     string userName = 2;
     string password = 3;
 }
 
-message ResumeSendedResponse{
+message ResumeCreatedResponse{
     string message = 1;
 }
 
 service ResumeService{
-    rpc SendResume(ResumeSended) returns (ResumeSendedResponse) {}
+    rpc SendResume(ResumeCreated) returns (ResumeCreatedResponse) {}
 }
 
 message SignIn {

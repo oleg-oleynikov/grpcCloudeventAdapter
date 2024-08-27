@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	ResumeService_SendResume_FullMethodName = "/proto.ResumeService/SendResume"
+	ResumeService_SendResume_FullMethodName = "/resume.ResumeService/SendResume"
 )
 
 // ResumeServiceClient is the client API for ResumeService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ResumeServiceClient interface {
-	SendResume(ctx context.Context, in *ResumeSended, opts ...grpc.CallOption) (*ResumeSendedResponse, error)
+	SendResume(ctx context.Context, in *ResumeCreated, opts ...grpc.CallOption) (*ResumeCreatedResponse, error)
 }
 
 type resumeServiceClient struct {
@@ -37,9 +37,9 @@ func NewResumeServiceClient(cc grpc.ClientConnInterface) ResumeServiceClient {
 	return &resumeServiceClient{cc}
 }
 
-func (c *resumeServiceClient) SendResume(ctx context.Context, in *ResumeSended, opts ...grpc.CallOption) (*ResumeSendedResponse, error) {
+func (c *resumeServiceClient) SendResume(ctx context.Context, in *ResumeCreated, opts ...grpc.CallOption) (*ResumeCreatedResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ResumeSendedResponse)
+	out := new(ResumeCreatedResponse)
 	err := c.cc.Invoke(ctx, ResumeService_SendResume_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (c *resumeServiceClient) SendResume(ctx context.Context, in *ResumeSended, 
 // All implementations must embed UnimplementedResumeServiceServer
 // for forward compatibility
 type ResumeServiceServer interface {
-	SendResume(context.Context, *ResumeSended) (*ResumeSendedResponse, error)
+	SendResume(context.Context, *ResumeCreated) (*ResumeCreatedResponse, error)
 	mustEmbedUnimplementedResumeServiceServer()
 }
 
@@ -59,7 +59,7 @@ type ResumeServiceServer interface {
 type UnimplementedResumeServiceServer struct {
 }
 
-func (UnimplementedResumeServiceServer) SendResume(context.Context, *ResumeSended) (*ResumeSendedResponse, error) {
+func (UnimplementedResumeServiceServer) SendResume(context.Context, *ResumeCreated) (*ResumeCreatedResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendResume not implemented")
 }
 func (UnimplementedResumeServiceServer) mustEmbedUnimplementedResumeServiceServer() {}
@@ -76,7 +76,7 @@ func RegisterResumeServiceServer(s grpc.ServiceRegistrar, srv ResumeServiceServe
 }
 
 func _ResumeService_SendResume_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ResumeSended)
+	in := new(ResumeCreated)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func _ResumeService_SendResume_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: ResumeService_SendResume_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResumeServiceServer).SendResume(ctx, req.(*ResumeSended))
+		return srv.(ResumeServiceServer).SendResume(ctx, req.(*ResumeCreated))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -97,7 +97,7 @@ func _ResumeService_SendResume_Handler(srv interface{}, ctx context.Context, dec
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ResumeService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.ResumeService",
+	ServiceName: "resume.ResumeService",
 	HandlerType: (*ResumeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	protoCloudevents "grpccloudevents/pb"
 
 	"log"
 	"net"
@@ -11,13 +12,13 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
-	"google.golang.org/protobuf/types/known/emptypb"
-	protoCloudevents "open-cluster-management.io/sdk-go/pkg/cloudevents/generic/options/grpc/protobuf/v1"
+	"google.golang.org/grpc/encoding"
+	"google.golang.org/grpc/encoding/gzip"
 )
 
 type CloudEventServiceServer struct {
+	// pb.UnimplementedCloudEventServiceServer
 	sync.RWMutex
 	protoCloudevents.UnimplementedCloudEventServiceServer
 
@@ -35,9 +36,9 @@ func NewCloudEventServiceServer(opt ...grpc.ServerOption) *CloudEventServiceServ
 	}
 }
 
-func (s *CloudEventServiceServer) Publish(ctx context.Context, req *protoCloudevents.PublishRequest) (*emptypb.Empty, error) {
+func (s *CloudEventServiceServer) Publish(ctx context.Context, req *protoCloudevents.PublishRequest) (*protoCloudevents.PublishResponse, error) {
 	event := req.GetEvent()
-	log.Println("Пришло нахуй")
+	log.Println("СОСАТЬ АМЕРИКА\nСОСАТЬ АМЕРИКА\nСОСАТЬ АМЕРИКА")
 	log.Println(event)
 	select {
 	case s.eventChan <- event:
@@ -47,7 +48,9 @@ func (s *CloudEventServiceServer) Publish(ctx context.Context, req *protoCloudev
 	}
 
 	go s.processEvents()
-	return &empty.Empty{}, nil
+	return &protoCloudevents.PublishResponse{
+		Success: true,
+	}, nil
 }
 
 func (s *CloudEventServiceServer) processEvents() {
@@ -162,8 +165,14 @@ func main() {
 	// unaryInterceptor := cors.BuildCorsUnaryInterceptor(corsHandler)
 	// streamInterceptor := cors.BuildCorsStreamInterceptor(corsHandler)
 	// c := NewCloudEventServiceServer(unaryInterceptor, streamInterceptor)
+
+	// callOption := grpc.UseCompressor(gzip.Name)
+	// grpc.Invoke()
+
+	encoding.RegisterCompressor(encoding.GetCompressor(gzip.Name))
+
 	c := NewCloudEventServiceServer(grpc.UnaryInterceptor(func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
-		// log.Println("Типа перехватил")
+		log.Println("Типа перехватил")
 		return handler(ctx, req)
 	}))
 

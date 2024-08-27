@@ -17,7 +17,7 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 
-	resumeEvent := &resume.ResumeSended{
+	resumeEvent := &resume.ResumeCreated{
 		ResumeId: "12121",
 		UserName: "user1",
 		Password: "pypa",
@@ -43,7 +43,7 @@ func main() {
 
 	startTime := time.Now()
 
-	for i := 0; i < 20000; i++ {
+	for i := 0; i < 10000; i++ {
 		client.Publish(event)
 	}
 
